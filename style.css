@@ -4,3 +4,12 @@ body {
     text-align: center;
     list-style: none;
 }
+
+p {
+color: white;
+margin-right: 60px;
+margin-left: 60px;
+font-size: 20px;
+font-weight: 500;
+line-height: 1.8;
+}
