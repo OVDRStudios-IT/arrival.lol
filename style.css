@@ -15,7 +15,7 @@ font-weight: 500;
 line-height: 1.8;
 }
 
-.button {
+.btn {
   background-color: #04AA6D; /* Green */
   border: none;
   color: white;
@@ -28,7 +28,7 @@ line-height: 1.8;
   cursor: pointer;
 }
 
-.button:before {
+.btn:before {
     font-family: "Font Awesome 5 Free";
     content: "\f00c";
     display: inline-block;
