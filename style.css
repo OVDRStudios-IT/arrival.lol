@@ -16,6 +16,7 @@ line-height: 1.8;
 }
 
 .btn {
+  border-radius: 8px;
   background-color: #04AA6D; /* Green */
   border: none;
   color: white;
