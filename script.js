@@ -1,47 +1,58 @@
-let timerElement = document.getElementById('timer');
-let initialTime = 86400; // Initial timer in seconds (1 day = 24 hours * 60 minutes * 60 seconds)
-let currentTime = initialTime;
-let subscriberCount = 0;
-let channelId = 'UC4TucIqWiRkUX8PHAXP9gXw'; // Replace with your YouTube channel ID
-let apiKey = 'AIzaSyBZaWCiNakkMlf-jze4UUXZoc3fmH0XWio'; // Replace with your YouTube API key
+const apiKey = 'AIzaSyBZaWCiNakkMlf-jze4UUXZoc3fmH0XWio';
+const channelId = 'UC4TucIqWiRkUX8PHAXP9gXw';
+const subscriberCountElement = document.getElementById('subscriber-count');
+const membershipCountElement = document.getElementById('membership-count');
+const timerElement = document.getElementById('timer');
 
+let subscribers = 0;
+let members = 0;
+let countdown = 10 * 60 * 60; // 10 hours in seconds
+
+// Convert seconds to HH:MM:SS
 function formatTime(seconds) {
-    const days = Math.floor(seconds / 86400);
-    const hrs = Math.floor((seconds % 86400) / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    return `${days.toString().padStart(2, '0')}:${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 }
 
 function updateTimer() {
-    if (currentTime > 0) {
-        currentTime--;
-        timerElement.textContent = formatTime(currentTime);
-    } else {
-        clearInterval(timerInterval);
-        clearInterval(subscriberInterval);
-        alert("Time's up!");
+    timerElement.textContent = formatTime(countdown);
+}
+
+function updateSubscriberCount(newSubscribers) {
+    subscribers = newSubscribers;
+    subscriberCountElement.textContent = subscribers;
+    countdown += newSubscribers * 20 * 60; // 20 minutes per subscriber
+}
+
+function updateMembershipCount(newMembers) {
+    members = newMembers;
+    membershipCountElement.textContent = members;
+    countdown += newMembers * 60 * 60; // 1 hour per member
+}
+
+// Fetch subscriber and membership counts from YouTube API
+async function fetchCounts() {
+    try {
+        const response = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelId}&key=${apiKey}`);
+        const data = await response.json();
+        const stats = data.items[0].statistics;
+        updateSubscriberCount(parseInt(stats.subscriberCount));
+        updateMembershipCount(parseInt(stats.memberCount)); // Adjust this if member count needs a different approach
+    } catch (error) {
+        console.error('Error fetching YouTube data:', error);
     }
 }
 
-function getSubscriberCount() {
-    fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelId}&key=${apiKey}`)
-        .then(response => response.json())
-        .then(data => {
-            const newSubscriberCount = parseInt(data.items[0].statistics.subscriberCount, 10);
-            if (newSubscriberCount > subscriberCount) {
-                const newSubscribers = newSubscriberCount - subscriberCount;
-                currentTime += newSubscribers * 3600; // Add 1 hour (3600 seconds) per new subscriber
-                subscriberCount = newSubscriberCount;
-            }
-        })
-        .catch(error => console.error('Error fetching subscriber count:', error));
+function tick() {
+    if (countdown > 0) {
+        countdown--;
+        updateTimer();
+    }
 }
 
-function startFollowathon() {
-    getSubscriberCount(); // Initial fetch
-    subscriberInterval = setInterval(getSubscriberCount, 60000); // Check every minute
-    timerInterval = setInterval(updateTimer, 1000); // Update timer every second
-}
-
-document.addEventListener('DOMContentLoaded', startFollowathon);
+updateTimer();
+fetchCounts();
+setInterval(tick, 1000);
+setInterval(fetchCounts, 60000); // Fetch subscriber counts every minute
