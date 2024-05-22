@@ -1,23 +1,21 @@
 body {
-    font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
-    background-color: #282c34;
-    color: #61dafb;
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
 }
 
-.container {
+.countdown-container {
     text-align: center;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-#timer {
-    font-size: 3rem;
-    margin: 20px 0;
-}
-
-.subscriber-count, .membership-count {
-    font-size: 1.5rem;
+#countdown {
+    font-size: 48px;
+    margin-top: 20px;
 }
