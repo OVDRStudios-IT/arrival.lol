@@ -1,11 +1,13 @@
-const apiKey = 'AIzaSyBZaWCiNakkMlf-jze4UUXZoc3fmH0XWio';
-const channelId = 'UC4TucIqWiRkUX8PHAXP9gXw';
+const apiKey = 'YOUR_YOUTUBE_API_KEY';
+const channelId = 'YOUR_CHANNEL_ID';
 const subscriberCountElement = document.getElementById('subscriber-count');
 const membershipCountElement = document.getElementById('membership-count');
 const timerElement = document.getElementById('timer');
 
-let subscribers = 0;
-let members = 0;
+let initialSubscribers = 0;
+let initialMembers = 0;
+let currentSubscribers = 0;
+let currentMembers = 0;
 let countdown = 10 * 60 * 60; // 10 hours in seconds
 
 // Convert seconds to HH:MM:SS
@@ -21,17 +23,23 @@ function updateTimer() {
 }
 
 function updateSubscriberCount(newSubscribers) {
-    const subscriberDiff = newSubscribers - subscribers;
-    subscribers = newSubscribers;
-    subscriberCountElement.textContent = subscribers;
-    countdown += subscriberDiff * 20 * 60; // 20 minutes per subscriber
+    if (initialSubscribers === 0) {
+        initialSubscribers = newSubscribers;
+    }
+    const subscriberDiff = newSubscribers - currentSubscribers;
+    currentSubscribers = newSubscribers;
+    subscriberCountElement.textContent = currentSubscribers;
+    countdown += subscriberDiff * 20 * 60; // 20 minutes per new subscriber
 }
 
 function updateMembershipCount(newMembers) {
-    const memberDiff = newMembers - members;
-    members = newMembers;
-    membershipCountElement.textContent = members;
-    countdown += memberDiff * 60 * 60; // 1 hour per member
+    if (initialMembers === 0) {
+        initialMembers = newMembers;
+    }
+    const memberDiff = newMembers - currentMembers;
+    currentMembers = newMembers;
+    membershipCountElement.textContent = currentMembers;
+    countdown += memberDiff * 60 * 60; // 1 hour per new member
 }
 
 // Fetch subscriber and membership counts from YouTube API
