@@ -1,5 +1,6 @@
 let timerElement = document.getElementById('timer');
-let startTime = 3600; // Initial timer in seconds (e.g., 1 hour)
+let initialTime = 3600; // Initial timer in seconds (e.g., 1 hour)
+let currentTime = initialTime;
 let subscriberCount = 0;
 let channelId = 'UC4TucIqWiRkUX8PHAXP9gXw'; // Replace with your YouTube channel ID
 let apiKey = 'AIzaSyBZaWCiNakkMlf-jze4UUXZoc3fmH0XWio'; // Replace with your YouTube API key
@@ -12,8 +13,14 @@ function formatTime(seconds) {
 }
 
 function updateTimer() {
-    startTime++;
-    timerElement.textContent = formatTime(startTime);
+    if (currentTime > 0) {
+        currentTime--;
+        timerElement.textContent = formatTime(currentTime);
+    } else {
+        clearInterval(timerInterval);
+        clearInterval(subscriberInterval);
+        alert("Time's up!");
+    }
 }
 
 function getSubscriberCount() {
@@ -23,7 +30,7 @@ function getSubscriberCount() {
             const newSubscriberCount = parseInt(data.items[0].statistics.subscriberCount, 10);
             if (newSubscriberCount > subscriberCount) {
                 const newSubscribers = newSubscriberCount - subscriberCount;
-                startTime += newSubscribers * 120; // Add 2 minutes per new subscriber
+                currentTime += newSubscribers * 120; // Add 2 minutes per new subscriber
                 subscriberCount = newSubscriberCount;
             }
         })
@@ -32,8 +39,8 @@ function getSubscriberCount() {
 
 function startFollowathon() {
     getSubscriberCount(); // Initial fetch
-    setInterval(getSubscriberCount, 60000); // Check every minute
-    setInterval(updateTimer, 1000); // Update timer every second
+    subscriberInterval = setInterval(getSubscriberCount, 60000); // Check every minute
+    timerInterval = setInterval(updateTimer, 1000); // Update timer every second
 }
 
 document.addEventListener('DOMContentLoaded', startFollowathon);
