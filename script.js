@@ -21,15 +21,17 @@ function updateTimer() {
 }
 
 function updateSubscriberCount(newSubscribers) {
+    const subscriberDiff = newSubscribers - subscribers;
     subscribers = newSubscribers;
     subscriberCountElement.textContent = subscribers;
-    countdown += newSubscribers * 20 * 60; // 20 minutes per subscriber
+    countdown += subscriberDiff * 20 * 60; // 20 minutes per subscriber
 }
 
 function updateMembershipCount(newMembers) {
+    const memberDiff = newMembers - members;
     members = newMembers;
     membershipCountElement.textContent = members;
-    countdown += newMembers * 60 * 60; // 1 hour per member
+    countdown += memberDiff * 60 * 60; // 1 hour per member
 }
 
 // Fetch subscriber and membership counts from YouTube API
@@ -39,7 +41,7 @@ async function fetchCounts() {
         const data = await response.json();
         const stats = data.items[0].statistics;
         updateSubscriberCount(parseInt(stats.subscriberCount));
-        updateMembershipCount(parseInt(stats.memberCount)); // Adjust this if member count needs a different approach
+        // Update membership count here if needed; currently, YouTube API does not provide member count directly
     } catch (error) {
         console.error('Error fetching YouTube data:', error);
     }
@@ -52,7 +54,8 @@ function tick() {
     }
 }
 
+// Initial setup
 updateTimer();
 fetchCounts();
-setInterval(tick, 1000);
+setInterval(tick, 1000); // Update the timer every second
 setInterval(fetchCounts, 60000); // Fetch subscriber counts every minute
