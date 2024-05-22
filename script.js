@@ -1,8 +1,8 @@
 let timerElement = document.getElementById('timer');
 let startTime = 3600; // Initial timer in seconds (e.g., 1 hour)
 let subscriberCount = 0;
-let channelId = 'YOUR_CHANNEL_ID'; // Replace with your YouTube channel ID
-let apiKey = 'YOUR_API_KEY'; // Replace with your YouTube API key
+let channelId = 'UC4TucIqWiRkUX8PHAXP9gXw'; // Replace with your YouTube channel ID
+let apiKey = 'AIzaSyBZaWCiNakkMlf-jze4UUXZoc3fmH0XWio'; // Replace with your YouTube API key
 
 function formatTime(seconds) {
     const hrs = Math.floor(seconds / 3600);
